@@ -17,18 +17,32 @@
         path: /opt/minecraft
         state: directory
         mode: '0755'
+        owner: ec2-user
+        group: ec2-user
+
+    - name: Create server logs directory
+      file:
+        path: /opt/minecraft/logs
+        state: directory
+        mode: '0755'
+        owner: ec2-user
+        group: ec2-user
 
     - name: Download Minecraft server
       get_url:
         url: https://piston-data.mojang.com/v1/objects/84194a2f286ef7c14ed7ce0090dba59902951553/server.jar
         dest: /opt/minecraft/server.jar
+        owner: ec2-user
+        group: ec2-user
 
     - name: Accept Minecraft EULA
       copy:
         dest: /opt/minecraft/eula.txt
         content: 'eula=true'
+        owner: ec2-user
+        group: ec2-user
 
-    - name: Create systemd service for Minecraft server 
+    - name: Create systemd service for Minecraft server
       copy:
         dest: /etc/systemd/system/minecraft.service
         content: |
@@ -41,6 +55,8 @@
           WorkingDirectory=/opt/minecraft
           ExecStart=/usr/bin/java -Xmx1024M -Xms1024M -jar /opt/minecraft/server.jar nogui
           Restart=on-failure
+          StandardOutput=file:/opt/minecraft/logs/server.log
+          StandardError=file:/opt/minecraft/logs/server.err.log
 
           [Install]
           WantedBy=multi-user.target
