@@ -18,7 +18,7 @@ cd - || exit
 
 # Update Ansible inventory
 echo "[minecraft_server]" > ./ansible/inventory.ini
-echo "${INSTANCE_PUBLIC_IP} ansible_user=ec2-user ansible_ssh_private_key_file=~/Downloads/minecraft-key.pem" >> ./ansible/inventory.ini
+echo "${INSTANCE_PUBLIC_IP} ansible_user=ec2-user ansible_ssh_private_key_file=~/Downloads/minecraft-key.pem ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'" >> ./ansible/inventory.ini
 
 # Run Ansible playbook
 ansible-playbook -i ./ansible/inventory.ini ./ansible/minecraft.yml
